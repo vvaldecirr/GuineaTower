@@ -1,5 +1,5 @@
 /**
- * Autor: Valdecir (Black Chan) - 03/AGO/2021
+ * Autor: Valdecir (Black Chan) - 017/DEZ/2023
  * Código Arduino para automação do apartamento do Shyp
  * vvaldecirr@hotmail.com
  */
@@ -20,18 +20,20 @@ const int pinoSensorAndar3  = 8; //Sensor do terceiro andar
 unsigned long lastLuzAndar1Time  = 0;
 unsigned long lastLuzAndar2Time  = 0;
 unsigned long lastLuzAndar3Time  = 0;
-unsigned long luzAndarDelay      = 60000; // Tempo padrão de luz de andar acesa
+unsigned long luzAndarDelay      = 120000; // Tempo padrão de luz de andar acesa 120000 2min
 
 int acionaAndar1; //Guardar valor do sensor do primeiro andar
 int acionaAndar2; //Guardar valor do sensor do segundo andar
 int acionaAndar3; //Guardar valor do sensor do terceiro andar
 
-bool f1a1 = false;
-bool f2a1 = false;
-bool f3a1 = false;
+bool f1a1 = false; //fase 1 = luz está apagada e sensor mandou acender
+bool f2a1 = false; //fase 2 = luz está acesa e precisa permanecer acesa enquanto não acabar o tempo de luzAndarDelay
+bool f3a1 = false; //fase 3 = luz está acesa e precisa apagar porque o tempoAndarDelay acabou
+
 bool f1a2 = false;
 bool f2a2 = false;
 bool f3a2 = false;
+
 bool f1a3 = false;
 bool f2a3 = false;
 bool f3a3 = false;
@@ -48,6 +50,11 @@ void setup() {
   pinMode(pinoSensorAndar3, INPUT);
   
   Serial.begin(9600);
+
+  digitalWrite(pinoLuzAndar1, LOW);
+  digitalWrite(pinoLuzAndar2, LOW);
+  digitalWrite(pinoLuzAndar3, LOW);
+
 }
  
 void loop() {
@@ -74,11 +81,11 @@ void loop() {
   //Andar1
   //fase 1
   if (f1a1) {
-    for (int i = 0; i < 32; i++) {
+    for (int i = 0; i < 100; i++) {
       analogWrite(pinoLuzAndar1, i);
-      delay(300);
+      delay(50);
     }
-    for (int i = 33; i < 255; i++) {
+    for (int i = 101; i < 255; i++) {
       analogWrite(pinoLuzAndar1, i);
       analogWrite(pinoLuzEscadaBaixo, i);
       delay(10);
@@ -112,11 +119,11 @@ void loop() {
   //Andar2
   //fase 1
   if (f1a2) {
-    for (int i = 0; i < 32; i++) {
+    for (int i = 0; i < 100; i++) {
       analogWrite(pinoLuzAndar2, i);
-      delay(300);
+      delay(50);
     }
-    for (int i = 33; i < 255; i++) {
+    for (int i = 101; i < 255; i++) {
       analogWrite(pinoLuzAndar2, i);
       analogWrite(pinoLuzEscadaBaixo, i);
       analogWrite(pinoLuzEscadaCima, i);
@@ -154,11 +161,11 @@ void loop() {
   //Andar3
   //fase 1
   if (f1a3) {
-    for (int i = 0; i < 32; i++) {
+    for (int i = 0; i < 100; i++) {
       analogWrite(pinoLuzAndar3, i);
-      delay(300);
+      delay(50);
     }
-    for (int i = 33; i < 255; i++) {
+    for (int i = 101; i < 255; i++) {
       analogWrite(pinoLuzAndar3, i);
       analogWrite(pinoLuzEscadaCima, i);
       delay(10);
